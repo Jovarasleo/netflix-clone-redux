@@ -1,11 +1,11 @@
 import React, { useEffect, useCallback } from "react";
 import { connect } from "react-redux";
-
 import Banner from "../../components/banner";
 import MovieCard from "../../components/content-cards";
 import Button from "../../components/button";
-
+import content from "../../content/";
 import "./index.css";
+import { bindActionCreators, compose } from "redux";
 
 function Home({
   movies,
@@ -21,15 +21,15 @@ function Home({
       const result = await fetch(
         "https://academy-video-api.herokuapp.com/content/free-items"
       );
-      const data = await result.json();
 
       if (result.ok) {
+        const data = await result.json();
         setMovies(data);
       } else {
-        setMoviesError(new Error(JSON.stringify(data)));
+        setMoviesError({ error: "something went wrong" });
       }
     } catch (error) {
-      setMoviesError(error);
+      setMoviesError(error.message);
     } finally {
       setMoviesLoading(false);
     }
@@ -77,7 +77,7 @@ function Home({
       <Banner />
       <div className="contentWrapper">
         <div className="Cards">
-          {error && <p className="error">{error}</p>}
+          {error && <p className="error">{JSON.stringify(error)}</p>}
           {loading && <p className="loading">Loading</p>}
           {movies.map(({ image, title, description, id }) => (
             <MovieCard
@@ -95,13 +95,13 @@ function Home({
   );
 }
 
-function mapStateToProps(state) {
-  return {
-    movies: state.content.movies.list,
-    loading: state.content.movies.loading,
-    error: state.content.movies.error,
-  };
-}
+// function mapStateToProps(state) {
+//   return {
+//     movies: state.content.movies.list,
+//     loading: state.content.movies.loading,
+//     error: state.content.movies.error,
+//   };
+// }
 
 // function mapDispatchToProps(dispatch) {
 //   return {
@@ -113,13 +113,24 @@ function mapStateToProps(state) {
 //       dispatch({ type: content.types.SET_MOVIES_ERROR, payload }),
 //   };
 // }
-function mapDispatchToProps(dispatch) {
-  return {
-    setMovies: (payload) => dispatch({ type: "CONTENT/SET_MOVIES", payload }),
-    setMoviesLoading: (payload) =>
-      dispatch({ type: "CONTENT/SET_MOVIES_LOADING", payload }),
-    setMoviesError: (payload) =>
-      dispatch({ type: "CONTENT/SET_MOVIES_ERROR", payload }),
-  };
-}
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+
+const enhance = compose(
+  connect(
+    (state) => ({
+      movies: content.selectors.getMovies(state),
+      loading: content.selectors.getMoviesLoading(state),
+      error: content.selectors.getMoviesLoading(state),
+    }),
+    (dispatch) =>
+      bindActionCreators(
+        {
+          setMovies: content.actions.setMovies,
+          setMoviesLoading: content.actions.setMoviesLoading,
+          setMoviesError: content.actions.setMoviesError,
+        },
+        dispatch
+      )
+  )
+);
+export default enhance(Home);
+// export default connect(mapStateToProps, mapDispatchToProps)(Home);
