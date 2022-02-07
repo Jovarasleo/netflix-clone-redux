@@ -10,19 +10,10 @@ const DEFAULT_STATE = {
 function reducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
     case types.TOGGLE_FAVOURITES: {
-      const { favourites } = state;
-      let remove = favourites.filter((favId) => action.id !== favId);
-      console.log("remove:", remove);
-      if (favourites.includes(action.id)) {
-        return {
-          ...state,
-          favourites: remove,
-        };
-      } else {
-        let add = favourites.concat(action.id);
-        console.log("add:", add);
-        return { ...state, favourites: add };
-      }
+      return {
+        ...state,
+        favourites: action.payload,
+      };
     }
 
     case types.GET_MOVIES: {

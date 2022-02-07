@@ -12,7 +12,9 @@ function Home() {
   const dispatch = useDispatch();
   const token = useSelector((state) => auth.selectors.getToken(state));
   const movies = useSelector((state) => content.selectors.getMovies(state));
-  const error = useSelector((state) => content.selectors.getMoviesError(state));
+  const movieError = useSelector((state) =>
+    content.selectors.getMoviesError(state)
+  );
   const loading = useSelector((state) =>
     content.selectors.getMoviesLoading(state)
   );
@@ -33,7 +35,9 @@ function Home() {
       {!token ? <Banner /> : null}
       <div className="contentWrapper">
         <div className="Cards">
-          {error && <p className="error">{JSON.stringify(error)}</p>}
+          {movieError.length && (
+            <p className="error">{JSON.stringify(movieError)}</p>
+          )}
           {loading && <p className="loading">Loading</p>}
           {movies?.map(({ image, title, description, id }) => (
             <MovieCard

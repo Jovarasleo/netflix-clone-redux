@@ -1,7 +1,15 @@
 import * as types from "./types";
+import * as selectors from "./selectors";
 import auth from "../auth";
-export const toggleFavourites = (id) => (dispatch) => {
-  dispatch({ type: types.TOGGLE_FAVOURITES, id });
+
+export const toggleFavourites = (id) => (dispatch, getState) => {
+  let favourites = selectors.getFavourites(getState());
+  if (favourites.includes(id)) {
+    favourites = favourites.filter((favId) => id !== favId);
+  } else {
+    favourites = favourites.concat(id);
+  }
+  dispatch({ type: types.TOGGLE_FAVOURITES, payload: favourites });
 };
 
 export const getMovies = () => async (dispatch) => {
