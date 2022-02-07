@@ -4,7 +4,7 @@ import Home from "./pages/Home/Home";
 import Login from "./pages/Login/Login";
 import SingleMovie from "./pages/SingleMovie/singleMovie";
 import Layout from "./components/layout";
-import store from "./store";
+import store from "../store";
 import "./App.css";
 function App() {
   return (

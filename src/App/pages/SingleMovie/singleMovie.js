@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
-import content from "../../content/";
+import { useParams, useNavigate } from "react-router-dom";
+import content from "../../../content";
 import "./index.css";
 import Button from "../../components/button";
-import auth from "../../auth";
+import auth from "../../../auth";
 function SingleMovie() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { movieId } = useParams();
   console.log("ID:", movieId);
@@ -21,12 +22,16 @@ function SingleMovie() {
   const [trailer, toggleTrailer] = useState(false);
 
   useEffect(() => {
+    if (error && error.message === "Access denied!") {
+      console.log("klaida:", error);
+      navigate("/", { replace: true });
+    }
     if (!movie) {
       dispatch(content.actions.getSingleMovie(movieId));
     }
   }, [dispatch, token, movieId, movie]);
 
-  console.log("movie:", movie);
+  console.log("movie:", movie, error);
   const WatchTrailer = () => {
     return (
       <div className="trailerWrapper" onClick={() => toggleTrailer(!trailer)}>
@@ -42,7 +47,7 @@ function SingleMovie() {
   };
   return (
     <>
-      {error && <p>{error}</p>}
+      {error && <p>{error.message}</p>}
       {loading && <p>Loading</p>}
       {movie && (
         <div className="SingleMovie">

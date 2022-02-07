@@ -28,6 +28,7 @@ function reducer(state = DEFAULT_STATE, action) {
       };
     }
     case types.GET_TOKEN_ERROR: {
+      console.log(action.payload);
       return {
         ...state,
         token: {

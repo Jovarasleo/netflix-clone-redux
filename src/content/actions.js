@@ -1,32 +1,70 @@
 import * as types from "./types";
-import api from "../api";
+import auth from "../auth";
+export const toggleFavourites = (id) => (dispatch) => {
+  dispatch({ type: types.TOGGLE_FAVOURITES, id });
+};
+
 export const getMovies = () => async (dispatch) => {
-  const storeToken = localStorage.getItem("token");
+  const token = localStorage.getItem("token");
   dispatch({ type: types.GET_MOVIES, payload: false });
-  try {
-    let response = null;
-    if (storeToken) {
-      response = await api.fetchAllMovies(storeToken);
-    } else response = await api.fetchFreeMovies();
-    dispatch({ type: types.GET_MOVIES_SUCCESS, payload: response });
-  } catch (error) {
-    dispatch({ type: types.GET_MOVIES_ERROR, payload: error });
+  if (token) {
+    const response = await fetch(
+      "https://academy-video-api.herokuapp.com/content/items",
+      {
+        method: "GET",
+        headers: {
+          "content-type": "application/json",
+          authorization: token,
+        },
+      }
+    );
+    if (response.status === 401) {
+      const payload = await response.json();
+      console.log("error payload:", payload);
+      dispatch({ type: auth.types.DELETE_TOKEN, payload: "" });
+    } else {
+      const payload = await response.json();
+      dispatch({ type: types.GET_MOVIES_SUCCESS, payload: payload });
+    }
+  }
+  if (!token) {
+    const response = await fetch(
+      "https://academy-video-api.herokuapp.com/content/free-items"
+    );
+    const payload = await response.json();
+    dispatch({ type: types.GET_MOVIES_SUCCESS, payload: payload });
   }
 };
 export const getSingleMovie = (movieId) => async (dispatch) => {
-  const storeToken = localStorage.getItem("token");
   dispatch({ type: types.GET_MOVIES, payload: false });
-  try {
-    let response = null;
-    if (storeToken) {
-      response = await api.fetchMovie(movieId, storeToken);
-    } else response = await api.fetchMovie(movieId);
-    dispatch({ type: types.GET_MOVIES_SUCCESS, payload: [response] });
-    console.log("getSingleMovie fires", response);
-  } catch (error) {
-    dispatch({ type: types.GET_MOVIES_ERROR, payload: error });
+  const token = localStorage.getItem("token");
+  if (token) {
+    const response = await fetch(
+      `https://academy-video-api.herokuapp.com/content/items/${movieId}`,
+      {
+        method: "GET",
+        headers: {
+          "content-type": "application/json",
+          authorization: token,
+        },
+      }
+    );
+    if (response.status === 401) {
+      const payload = await response.json();
+      console.log("error payload:", payload);
+      dispatch({ type: auth.types.DELETE_TOKEN, payload: payload });
+      dispatch({ type: types.GET_MOVIES_ERROR, payload: payload });
+    }
+    if (response.ok) {
+      const payload = await response.json();
+      dispatch({ type: types.GET_MOVIES_SUCCESS, payload: [payload] });
+    }
   }
-};
-export const toggleFavourites = (id) => (dispatch) => {
-  dispatch({ type: types.TOGGLE_FAVOURITES, id });
+  if (!token) {
+    const response = await fetch(
+      `https://academy-video-api.herokuapp.com/content/items/${movieId}`
+    );
+    const payload = await response.json();
+    dispatch({ type: types.GET_MOVIES_SUCCESS, payload: [payload] });
+  }
 };

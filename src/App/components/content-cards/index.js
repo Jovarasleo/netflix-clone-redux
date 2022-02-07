@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
-import content from "../../content";
+import content from "../../../content";
 import Button from "../button";
 
 import "./index.css";

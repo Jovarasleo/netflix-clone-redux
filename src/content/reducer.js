@@ -3,7 +3,7 @@ const DEFAULT_STATE = {
   favourites: [],
   movies: {
     loading: false,
-    error: null,
+    error: {},
     list: [],
   },
 };

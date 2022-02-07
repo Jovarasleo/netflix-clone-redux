@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import auth from "../../auth";
+import auth from "../../../auth";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/button";
 import hidden from "../../images/hidden.png";

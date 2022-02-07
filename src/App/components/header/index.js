@@ -3,7 +3,7 @@ import Button from "../button";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import logo from "../../images/logo.svg";
-import auth from "../../auth";
+import auth from "../../../auth";
 function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();

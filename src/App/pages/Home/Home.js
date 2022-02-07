@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from "react-redux";
 import Banner from "../../components/banner";
 import MovieCard from "../../components/content-cards";
 import Button from "../../components/button";
-import content from "../../content/";
-import auth from "../../auth";
+import content from "../../../content/";
+import auth from "../../../auth";
 
 import "./index.css";
 
@@ -16,9 +16,15 @@ function Home() {
   const loading = useSelector((state) =>
     content.selectors.getMoviesLoading(state)
   );
-
+  const tokenError = useSelector((state) =>
+    auth.selectors.getTokenError(state)
+  );
   useEffect(() => {
     dispatch(content.actions.getMovies());
+    if (tokenError?.length) {
+      console.log("token err:", tokenError);
+      dispatch(auth.actions.deleteToken());
+    }
   }, [dispatch, token]);
 
   console.log(movies);
@@ -51,23 +57,3 @@ function Home() {
   );
 }
 export default Home;
-// const enhance = compose(
-//   connect(
-//     (state) => ({
-//       movies: content.selectors.getMovies(state),
-//       loading: content.selectors.getMoviesLoading(state),
-//       error: content.selectors.getMoviesLoading(state),
-//     }),
-//     (dispatch) =>
-//       bindActionCreators(
-//         {
-//           getMovies: content.actions.getMovies,
-//           getMoviesLoading: content.actions.getMoviesLoading,
-//           getMoviesError: content.actions.getMoviesError,
-//         },
-//         dispatch
-//       )
-//   )
-// );
-// export default enhance(Home);
-// export default connect(mapStateToProps, mapDispatchToProps)(Home);
