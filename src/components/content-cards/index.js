@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { connect } from "react-redux";
+import content from "../../content";
 import Button from "../button";
 
 import "./index.css";
@@ -44,7 +45,8 @@ function mapStateToProps({ content }, { id }) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    togglefavourite: (id) => dispatch({ type: "CONTENT/TOGGLE_FAVOURITE", id }),
+    togglefavourite: (id) =>
+      dispatch({ type: content.types.TOGGLE_FAVOURITES, id }),
   };
 }
 

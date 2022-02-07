@@ -1,21 +1,11 @@
-import { createStore, combineReducers, applyMiddleware, compose } from "redux";
+import { createStore, combineReducers, applyMiddleware } from "redux";
 import content from "../content";
 import middleware from "./middleware";
-
-const enhancers =
-  process.env.NODE_ENV !== "production" &&
-  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    : compose;
-
+import auth from "../auth";
 const rootReducer = combineReducers({
   content: content.reducer,
+  auth: auth.reducer,
 });
-
-const store = createStore(
-  rootReducer,
-  {},
-  enhancers(applyMiddleware(...middleware))
-);
+const store = createStore(rootReducer, applyMiddleware(...middleware));
 
 export default store;

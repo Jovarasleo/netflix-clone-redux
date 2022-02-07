@@ -7,22 +7,34 @@ const DEFAULT_STATE = {
     list: [],
   },
 };
-
 function reducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
-    case types.TOGGLE_FAVOURITE: {
+    case types.TOGGLE_FAVOURITES: {
       const { favourites } = state;
-
+      let remove = favourites.filter((favId) => action.id !== favId);
+      console.log("remove:", remove);
       if (favourites.includes(action.id)) {
         return {
           ...state,
-          favourites: favourites.filter((favId) => action.id !== favId),
+          favourites: remove,
         };
       } else {
-        return { ...state, favourites: favourites.concat(action.id) };
+        let add = favourites.concat(action.id);
+        console.log("add:", add);
+        return { ...state, favourites: add };
       }
     }
-    case types.SET_MOVIES: {
+
+    case types.GET_MOVIES: {
+      return {
+        ...state,
+        movies: {
+          ...state.movies,
+          isLoading: action.payload,
+        },
+      };
+    }
+    case types.GET_MOVIES_SUCCESS: {
       return {
         ...state,
         movies: {
@@ -31,16 +43,7 @@ function reducer(state = DEFAULT_STATE, action) {
         },
       };
     }
-    case types.SET_MOVIES_SUCCESS: {
-      return {
-        ...state,
-        movies: {
-          ...state.movies,
-          loading: action.payload,
-        },
-      };
-    }
-    case types.SET_MOVIES_ERROR: {
+    case types.GET_MOVIES_ERROR: {
       return {
         ...state,
         movies: {
@@ -53,5 +56,4 @@ function reducer(state = DEFAULT_STATE, action) {
       return state;
   }
 }
-
 export default reducer;

@@ -1,74 +1,81 @@
-import React, { useCallback, useState } from "react";
-import { Navigate } from "react-router-dom";
-
+import React, { useState, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import auth from "../../auth";
+import { useNavigate } from "react-router-dom";
 import Button from "../../components/button";
-
+import hidden from "../../images/hidden.png";
+import shown from "../../images/shown.png";
 import "./index.css";
 
-function Login({ user, setUser }) {
-  const [error, setError] = useState("");
-
-  const handleSubmit = useCallback(async (event, setUser, setError) => {
-    event.preventDefault();
-
-    const user = {
-      username: event.target[0].value,
-      password: event.target[1].value,
-    };
-
-    fetch("https://academy-video-api.herokuapp.com/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(user),
-    })
-      .then((res) => {
-        if (res.status === 400) {
-          throw new Error("Failure: please check the login details");
-        }
-        return res.json();
-      })
-      .then((result) => {
-        setUser(result.token);
-        localStorage.setItem("user", result.token);
-      })
-      .catch((err) => setError(err.message));
-  }, []);
+function Login() {
+  const passwordInput = useRef(null);
+  const token = useSelector((state) => auth.selectors.getToken(state));
+  const error = useSelector(auth.selectors.getTokenError);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [on, setOn] = useState(true);
+  const LogIn = async () => {
+    dispatch(auth.actions.setToken(name, password));
+    if (token) {
+      navigate("/", { replace: true });
+    }
+  };
+  const pswType = () => {
+    setOn(!on);
+    let type = passwordInput.current.type;
+    if (type === "password") {
+      passwordInput.current.type = "text";
+    } else {
+      passwordInput.current.type = "password";
+    }
+  };
+  useEffect(() => {
+    if (token) navigate("/", { replace: true });
+  }, [token, navigate]);
 
   return (
-    <div className="login">
-      {user && <Navigate to="/content" />}
-      <form
-        className="login_form"
-        onSubmit={(event) => handleSubmit(event, setUser, setError)}
-      >
-        <div>
-          <label htmlFor="username">Username </label>
-          <br />
-          <input
-            className="login_form__input"
-            type="text"
-            name="username"
-            id="username"
-            required
-          ></input>
-        </div>
-        <div>
-          <label htmlFor="password">Password</label> <br />
-          <input
-            className="login_form__input"
-            type="password"
-            name="password"
-            id="password"
-            required
-          ></input>
-        </div>
-        {error && <p className="errorMessage">{error}</p>}
-        <div>
-          <Button>Sign In</Button>
+    <div className="formWrapper">
+      <form className="login-form" onSubmit={(e) => e.preventDefault()}>
+        <div className="login">
+          <div className="inputWrapper">
+            <label htmlFor="username">Username </label>
+            <br />
+            <input
+              className="login_form__input"
+              onChange={(e) => setName(e.target.value)}
+              type="text"
+              name="username"
+              id="username"
+              required
+            />
+          </div>
+          <div className="inputWrapper">
+            <label htmlFor="password">Password</label> <br />
+            <input
+              ref={passwordInput}
+              className="login_form__input password"
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              name="password"
+              id="password"
+              required
+            />
+            <img
+              className="inputIcon"
+              onClick={() => pswType()}
+              alt="Visibility Icon"
+              src={on ? hidden : shown}
+            ></img>
+          </div>
+          {error && <p className="error">{error}</p>}
+          <Button onClick={LogIn} className={"center signInBtn"}>
+            Sign In
+          </Button>
         </div>
       </form>
     </div>
   );
 }
-
 export default Login;

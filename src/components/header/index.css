@@ -42,3 +42,8 @@
     max-height: 780px;
   }
 }
+@media only screen and (min-width: 1600px) {
+  .header__banner {
+    max-height: 1000px;
+  }
+}
