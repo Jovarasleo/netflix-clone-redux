@@ -6,8 +6,10 @@ export const toggleFavourites = (id) => (dispatch, getState) => {
   let favourites = selectors.getFavourites(getState());
   if (favourites.includes(id)) {
     favourites = favourites.filter((favId) => id !== favId);
+    localStorage.setItem("favourites", JSON.stringify(favourites));
   } else {
     favourites = favourites.concat(id);
+    localStorage.setItem("favourites", JSON.stringify(favourites));
   }
   dispatch({ type: types.TOGGLE_FAVOURITES, payload: favourites });
 };

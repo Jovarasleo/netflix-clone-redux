@@ -1,6 +1,6 @@
 import * as types from "./types";
 const DEFAULT_STATE = {
-  favourites: [],
+  favourites: JSON.parse(localStorage.getItem("favourites")) || [],
   movies: {
     loading: false,
     error: {},
