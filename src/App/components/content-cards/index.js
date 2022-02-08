@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { ContentContext } from "../../../context";
+import FavouritesContext from "../../../context/FavouritesContext";
 import Button from "../button";
 
 import "./index.css";
 
 function MovieCard({ id, img, title, about }) {
   const navigate = useNavigate();
-  const { favourites, toggleFavourite } = useContext(ContentContext);
+  const { favourites, toggleFavourite } = useContext(FavouritesContext);
   const isFavourite = favourites.includes(id);
   return (
     <div className="card">

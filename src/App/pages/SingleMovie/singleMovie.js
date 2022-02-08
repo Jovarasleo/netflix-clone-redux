@@ -1,39 +1,62 @@
 import { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { ContentContext } from "../../../context";
-import content from "../../../content";
+import { useContext, useCallback } from "react";
+import FavouritesContext from "../../../context/FavouritesContext";
+import AuthContext from "../../../context/AuthenticationContext";
+import GetSingleMovieContext from "../../../context/SingleMovieContext";
+import GetMoviesContext from "../../../context/GetMoviesContext";
 import "./index.css";
 import Button from "../../components/button";
-import auth from "../../../auth";
 function SingleMovie() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { movie, setMovie, movieLoading, setLoading, movieError, setError } =
+    useContext(GetSingleMovieContext);
+  const { token } = useContext(AuthContext);
   const { movieId } = useParams();
-  console.log("ID:", movieId);
-  const { favourites, toggleFavourite } = useContext(ContentContext);
+  const { favourites, toggleFavourite } = useContext(FavouritesContext);
   const isFavourite = favourites.includes(movieId);
-
-  let movie = useSelector((state) =>
-    content.selectors.getSingleMovie(state, movieId)
-  );
-  const token = useSelector(auth.selectors.getToken);
-  const error = useSelector(content.selectors.getMoviesError);
-  const loading = useSelector(content.selectors.getMoviesLoading);
+  const { list } = useContext(GetMoviesContext);
   const [trailer, toggleTrailer] = useState(false);
-
+  console.log(movie);
+  if (list.length) setMovie(list.find((movie) => movie.id === movieId));
+  const getMovie = useCallback(async () => {
+    try {
+      let payload;
+      setLoading(true);
+      if (token) {
+        const response = await fetch(
+          `https://academy-video-api.herokuapp.com/content/items/${movieId}`,
+          {
+            method: "GET",
+            headers: {
+              "content-type": "application/json",
+              authorization: token,
+            },
+          }
+        );
+        payload = await response.json();
+        console.log("getMovies TOKEN:", payload);
+        setMovie(payload);
+      }
+      if (!token) {
+        console.log("missing token");
+      }
+    } catch (e) {
+      setError(e);
+    }
+    setLoading(movieLoading);
+  }, [setError, setMovie, token, movieId]);
   useEffect(() => {
-    if (error && error.message === "Access denied!") {
-      console.log("klaida:", error);
+    if (movieError && movieError.message === "Access denied!") {
+      console.log("klaida:", movieError);
       navigate("/", { replace: true });
     }
-    if (!movie) {
-      dispatch(content.actions.getSingleMovie(movieId));
+    if (!movie.length) {
+      getMovie();
     }
-  }, [dispatch, token, movieId, movie, error]);
+  }, [getMovie, list]);
 
-  console.log("movie:", movie, error);
+  console.log("movie:", movie);
   const WatchTrailer = () => {
     return (
       <div className="trailerWrapper" onClick={() => toggleTrailer(!trailer)}>
@@ -49,8 +72,8 @@ function SingleMovie() {
   };
   return (
     <>
-      {error && <p>{error.message}</p>}
-      {loading && <p>Loading</p>}
+      {movieError && <p>{movieError.message}</p>}
+      {movieLoading && <p>Loading</p>}
       {movie && (
         <div className="SingleMovie">
           <img

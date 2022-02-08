@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import auth from "../../../auth";
+import { useContext } from "react";
+import AuthContext from "../../../context/AuthenticationContext";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/button";
 import hidden from "../../images/hidden.png";
@@ -9,19 +9,36 @@ import "./index.css";
 
 function Login() {
   const passwordInput = useRef(null);
-  const token = useSelector((state) => auth.selectors.getToken(state));
-  const error = useSelector(auth.selectors.getTokenError);
-  const dispatch = useDispatch();
+  const { token, setToken, loading, setLoading, error, setError } =
+    useContext(AuthContext);
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [on, setOn] = useState(true);
   const LogIn = async () => {
-    dispatch(auth.actions.setToken(name, password));
-    if (token) {
-      navigate("/", { replace: true });
+    try {
+      setLoading(true);
+      console.log({ name, password });
+      const response = await fetch(
+        "https://academy-video-api.herokuapp.com/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+
+          body: JSON.stringify({ username: name, password: password }),
+        }
+      );
+      const payload = await response.json();
+      console.log(payload);
+      setToken(payload.token);
+    } catch (e) {
+      setError(e);
     }
+    setLoading(false);
   };
+
   const pswType = () => {
     setOn(!on);
     let type = passwordInput.current.type;
@@ -32,7 +49,7 @@ function Login() {
     }
   };
   useEffect(() => {
-    if (token) navigate("/", { replace: true });
+    if (token && token.length) navigate("/", { replace: true });
   }, [token, navigate]);
 
   return (

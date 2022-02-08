@@ -4,12 +4,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import logo from "../../images/logo.svg";
 import auth from "../../../auth";
+import { useContext, useCallback } from "react";
+import AuthContext from "../../../context/AuthenticationContext";
 function Header() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const token = useSelector((state) => auth.selectors.getToken(state));
+  const { token, setToken } = useContext(AuthContext);
   const logout = () => {
-    dispatch(auth.actions.deleteToken());
+    localStorage.removeItem("token");
+    setToken("");
   };
   return (
     <header className="header">

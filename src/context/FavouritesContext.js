@@ -1,10 +1,13 @@
 import { createContext, useState } from "react";
-const ContentContext = createContext();
+
 const FAVOURITES_KEY = "content/favourites";
-function ContentProvider({ children }) {
-  const [favourites, setFavourites] = useState(
-    JSON.parse(localStorage.getItem(FAVOURITES_KEY)) || []
-  );
+const DEFAULT_FAVOURITES = {
+  favorites: JSON.parse(localStorage.getItem(FAVOURITES_KEY)) || [],
+};
+
+const FavouritesContext = createContext(DEFAULT_FAVOURITES.favorites);
+function FavouritesProvider({ children }) {
+  const [favourites, setFavourites] = useState(DEFAULT_FAVOURITES.favorites);
   console.log(favourites);
   const toggleFavourite = (id) => {
     let newFavourites = null;
@@ -17,10 +20,10 @@ function ContentProvider({ children }) {
     localStorage.setItem(FAVOURITES_KEY, JSON.stringify(newFavourites));
   };
   return (
-    <ContentContext.Provider value={{ favourites, toggleFavourite }}>
+    <FavouritesContext.Provider value={{ favourites, toggleFavourite }}>
       {children}
-    </ContentContext.Provider>
+    </FavouritesContext.Provider>
   );
 }
-export default ContentContext;
-export { ContentProvider };
+export default FavouritesContext;
+export { FavouritesProvider };

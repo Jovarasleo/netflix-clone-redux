@@ -5,41 +5,70 @@ import MovieCard from "../../components/content-cards";
 import Button from "../../components/button";
 import content from "../../../content/";
 import auth from "../../../auth";
-
+import { useCallback } from "react";
+import AuthContext from "../../../context/AuthenticationContext";
+import GetMoviesContext from "../../../context/GetMoviesContext";
+import { useContext } from "react";
 import "./index.css";
 
 function Home() {
+  const { list, setList, listLoading, listError, setError } =
+    useContext(GetMoviesContext);
   const dispatch = useDispatch();
-  const token = useSelector((state) => auth.selectors.getToken(state));
-  const movies = useSelector((state) => content.selectors.getMovies(state));
-  const movieError = useSelector((state) =>
-    content.selectors.getMoviesError(state)
-  );
-  const loading = useSelector((state) =>
-    content.selectors.getMoviesLoading(state)
-  );
+  const { token } = useContext(AuthContext);
   const tokenError = useSelector((state) =>
     auth.selectors.getTokenError(state)
   );
-  useEffect(() => {
-    dispatch(content.actions.getMovies());
-    if (tokenError?.length) {
-      console.log("token err:", tokenError);
-      dispatch(auth.actions.deleteToken());
+  const getMovies = useCallback(async () => {
+    // setLoading(true);
+    let payload;
+    try {
+      if (token) {
+        let response = await fetch(
+          "https://academy-video-api.herokuapp.com/content/items",
+          {
+            method: "GET",
+            headers: {
+              "content-type": "application/json",
+              authorization: token,
+            },
+          }
+        );
+        payload = await response.json();
+        console.log("getMovies TOKEN:", payload);
+      }
+      if (!token) {
+        let response = await fetch(
+          "https://academy-video-api.herokuapp.com/content/free-items"
+        );
+        payload = await response.json();
+        console.log("getMovies !TOKEN:", payload);
+      }
+      setList(payload);
+    } catch (e) {
+      setError(e);
     }
-  }, [dispatch, token, tokenError]);
+    // setLoading(listLoading);
+  }, [setError, setList, token]);
 
-  console.log(movies);
+  useEffect(() => {
+    getMovies();
+    // if (tokenError?.length) {
+    //   console.log("token err:", tokenError);
+    //   dispatch(auth.actions.deleteToken());
+    // }
+  }, [getMovies]);
+  console.log(" HOME CALLED:", list);
   return (
     <>
       {!token ? <Banner /> : null}
       <div className="contentWrapper">
         <div className="Cards">
-          {movieError.length && (
-            <p className="error">{JSON.stringify(movieError)}</p>
+          {listError?.length && (
+            <p className="error">{JSON.stringify(listError)}</p>
           )}
-          {loading && <p className="loading">Loading</p>}
-          {movies?.map(({ image, title, description, id }) => (
+          {listLoading && <p className="loading">Loading</p>}
+          {list?.map(({ image, title, description, id }) => (
             <MovieCard
               key={id}
               id={id}
