@@ -1,0 +1,36 @@
+.Cards {
+  display: grid;
+  grid-template-columns: repeat(3, 270px);
+  gap: 100px;
+  justify-content: center;
+}
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-bottom: 50px;
+}
+.center {
+  margin: 0 auto;
+}
+.margin-top {
+  margin-top: 50px;
+}
+.loading,
+.error {
+  display: inline-block;
+  width: 100%;
+  color: white;
+  text-align: center;
+}
+@media only screen and (max-width: 1000px) {
+  .Cards {
+    grid-template-columns: repeat(2, 270px);
+  }
+}
+@media only screen and (max-width: 680px) {
+  .Cards {
+    grid-template-columns: repeat(1, 270px);
+  }
+}

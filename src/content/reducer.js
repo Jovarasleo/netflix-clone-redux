@@ -1,28 +1,31 @@
 import * as types from "./types";
 const DEFAULT_STATE = {
-  favourites: [],
+  favourites: JSON.parse(localStorage.getItem("favourites")) || [],
   movies: {
     loading: false,
-    error: null,
+    error: {},
     list: [],
   },
 };
-
 function reducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
-    case types.TOGGLE_FAVOURITE: {
-      const { favourites } = state;
-
-      if (favourites.includes(action.id)) {
-        return {
-          ...state,
-          favourites: favourites.filter((favId) => action.id !== favId),
-        };
-      } else {
-        return { ...state, favourites: favourites.concat(action.id) };
-      }
+    case types.TOGGLE_FAVOURITES: {
+      return {
+        ...state,
+        favourites: action.payload,
+      };
     }
-    case types.SET_MOVIES: {
+
+    case types.GET_MOVIES: {
+      return {
+        ...state,
+        movies: {
+          ...state.movies,
+          isLoading: action.payload,
+        },
+      };
+    }
+    case types.GET_MOVIES_SUCCESS: {
       return {
         ...state,
         movies: {
@@ -31,16 +34,7 @@ function reducer(state = DEFAULT_STATE, action) {
         },
       };
     }
-    case types.SET_MOVIES_SUCCESS: {
-      return {
-        ...state,
-        movies: {
-          ...state.movies,
-          loading: action.payload,
-        },
-      };
-    }
-    case types.SET_MOVIES_ERROR: {
+    case types.GET_MOVIES_ERROR: {
       return {
         ...state,
         movies: {
@@ -53,5 +47,4 @@ function reducer(state = DEFAULT_STATE, action) {
       return state;
   }
 }
-
 export default reducer;

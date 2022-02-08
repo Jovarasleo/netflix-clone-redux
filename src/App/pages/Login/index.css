@@ -1,0 +1,58 @@
+.formWrapper {
+  background-color: rgb(37, 37, 37);
+  height: calc(100vh - (130px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 50px;
+}
+.login-form {
+  margin: 0 auto;
+  width: 500px;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(199, 199, 199);
+  position: relative;
+  border-radius: 10px;
+}
+.login-form label {
+  color: black;
+  font-weight: 600;
+}
+.login-form input {
+  margin-top: 10px;
+  width: 100%;
+  height: 35px;
+  color: black;
+  margin-bottom: 10px;
+  border: none;
+  border-radius: 5px;
+  padding-left: 10px;
+  font-size: 16px;
+  background-color: white;
+  box-sizing: border-box;
+}
+.inputWrapper {
+  position: relative;
+  margin-bottom: 20px;
+}
+.error {
+  color: red;
+  position: absolute;
+  width: 500px;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.inputIcon {
+  top: 28px;
+  right: 0px;
+  padding-right: 10px;
+  width: 35px;
+  height: 35px;
+  position: absolute;
+}
+.signInBtn {
+  margin-top: 20px;
+}
