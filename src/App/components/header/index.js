@@ -1,14 +1,11 @@
 import "./index.css";
 import Button from "../button";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import logo from "../../images/logo.svg";
-import auth from "../../../auth";
-import { useContext, useCallback } from "react";
+import { useContext } from "react";
 import AuthContext from "../../../context/AuthenticationContext";
 function Header() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { token, setToken } = useContext(AuthContext);
   const logout = () => {
     localStorage.removeItem("token");

@@ -1,10 +1,7 @@
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import Banner from "../../components/banner";
 import MovieCard from "../../components/content-cards";
 import Button from "../../components/button";
-import content from "../../../content/";
-import auth from "../../../auth";
 import { useCallback } from "react";
 import AuthContext from "../../../context/AuthenticationContext";
 import GetMoviesContext from "../../../context/GetMoviesContext";
@@ -14,11 +11,10 @@ import "./index.css";
 function Home() {
   const { list, setList, listLoading, listError, setError } =
     useContext(GetMoviesContext);
-  const dispatch = useDispatch();
   const { token } = useContext(AuthContext);
-  const tokenError = useSelector((state) =>
-    auth.selectors.getTokenError(state)
-  );
+  // const tokenError = useSelector((state) =>
+  //   auth.selectors.getTokenError(state)
+  // );
   const getMovies = useCallback(async () => {
     // setLoading(true);
     let payload;
