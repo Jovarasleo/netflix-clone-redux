@@ -3,60 +3,50 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useContext, useCallback } from "react";
 import FavouritesContext from "../../../context/FavouritesContext";
 import AuthContext from "../../../context/AuthenticationContext";
-import GetSingleMovieContext from "../../../context/SingleMovieContext";
 import GetMoviesContext from "../../../context/GetMoviesContext";
 import "./index.css";
 import Button from "../../components/button";
+import Spiner from "../../components/loadingIcon";
+import fetchAPI from "../../fetchAPI";
 function SingleMovie() {
   const navigate = useNavigate();
-  const { movie, setMovie, movieLoading, setLoading, movieError, setError } =
-    useContext(GetSingleMovieContext);
+  const { list } = useContext(GetMoviesContext);
   const { token } = useContext(AuthContext);
   const { movieId } = useParams();
   const { favourites, toggleFavourite } = useContext(FavouritesContext);
   const isFavourite = favourites.includes(movieId);
-  const { list } = useContext(GetMoviesContext);
   const [trailer, toggleTrailer] = useState(false);
-  console.log(movie);
-  if (list.length) setMovie(list.find((movie) => movie.id === movieId));
+  const [error, setError] = useState();
+  const [loading, setLoading] = useState();
+  const [movie, setMovie] = useState();
   const getMovie = useCallback(async () => {
     try {
-      let payload;
-      setLoading(true);
-      if (token) {
-        const response = await fetch(
-          `https://academy-video-api.herokuapp.com/content/items/${movieId}`,
-          {
-            method: "GET",
-            headers: {
-              "content-type": "application/json",
-              authorization: token,
-            },
-          }
-        );
-        payload = await response.json();
-        console.log("getMovies TOKEN:", payload);
-        setMovie(payload);
+      const getContent = await fetchAPI.getData(
+        `https://academy-video-api.herokuapp.com/content/items/${movieId}`,
+        token
+      );
+      console.log(getContent);
+      if (getContent.success) {
+        setMovie(getContent.data);
       }
-      if (!token) {
-        console.log("missing token");
+      if (!getContent.success) {
+        setError(getContent.data.error);
+        setTimeout(function () {
+          navigate("/");
+        }, 5000);
       }
     } catch (e) {
       setError(e);
     }
-    setLoading(movieLoading);
-  }, [setError, setMovie, token, movieId]);
-  useEffect(() => {
-    if (movieError && movieError.message === "Access denied!") {
-      console.log("klaida:", movieError);
-      navigate("/", { replace: true });
-    }
-    if (!movie.length) {
-      getMovie();
-    }
-  }, [getMovie, list]);
+    setLoading(false);
+  }, [setError, setMovie, movieId, navigate, token]);
 
-  console.log("movie:", movie);
+  useEffect(() => {
+    if (!list.length) {
+      setLoading(true);
+      getMovie();
+    } else setMovie(list.find((movie) => movie.id === movieId));
+  }, [getMovie, setError, list, movieId]);
   const WatchTrailer = () => {
     return (
       <div className="trailerWrapper" onClick={() => toggleTrailer(!trailer)}>
@@ -72,37 +62,39 @@ function SingleMovie() {
   };
   return (
     <>
-      {movieError && <p>{movieError.message}</p>}
-      {movieLoading && <p>Loading</p>}
-      {movie && (
-        <div className="SingleMovie">
-          <img
-            src={movie.image}
-            alt={movie.title}
-            className="SingleMovie--image"
-          ></img>
+      <div className="movieWrapper">
+        {error && <p className="error-msg">{error.message}</p>}
+        {loading && <Spiner />}
+        {movie && !error && !loading && (
+          <div className="singleMovie">
+            <img
+              src={movie.image}
+              alt={movie.title}
+              className="singleMovie--image"
+            ></img>
 
-          <div className="SingleMovie__content">
-            <div>
-              <h3 className="SingleMovie__content--title">{movie.title}</h3>
-              <p className="SingleMovie__content--about">{movie.description}</p>
+            <div className="singleMovie__content">
+              <div>
+                <h3 className="content--title">{movie.title}</h3>
+                <p className="content--about">{movie.description}</p>
+              </div>
+              <div className="content--buttons">
+                <Button onClick={() => toggleTrailer(!trailer)}>Watch ▶</Button>
+                <Button
+                  isfavourite={isFavourite}
+                  className={isFavourite ? "outline" : ""}
+                  onClick={() => {
+                    toggleFavourite(movieId);
+                  }}
+                >
+                  {isFavourite ? "Remove 💔" : "Favourite"}
+                </Button>
+              </div>
             </div>
-            <div className="SingleMovie__content--buttons">
-              <Button onClick={() => toggleTrailer(!trailer)}>Watch ▶</Button>
-              <Button
-                isfavourite={isFavourite}
-                className={isFavourite ? "outline" : ""}
-                onClick={() => {
-                  toggleFavourite(movieId);
-                }}
-              >
-                {isFavourite ? "Remove 💔" : "favourite"}
-              </Button>
-            </div>
+            {trailer ? <WatchTrailer /> : null}
           </div>
-          {trailer ? <WatchTrailer /> : null}
-        </div>
-      )}
+        )}
+      </div>
     </>
   );
 }

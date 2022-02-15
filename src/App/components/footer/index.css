@@ -1,9 +1,23 @@
 footer {
-  color: white;
+  position: relative;
   width: 100%;
-  bottom: 0;
-  position: absolute;
+  background-color: var(--dark-gray);
+  min-height: 70px;
+  display: flex;
+  align-items: center;
+}
+.footerWrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 20px;
 }
 footer p {
   text-align: center;
+}
+@media only screen and (max-width: 540px) {
+  .footerWrapper {
+    flex-direction: column;
+  }
 }

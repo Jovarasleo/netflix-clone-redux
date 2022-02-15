@@ -2,14 +2,16 @@ import React, { useState, useEffect, useRef } from "react";
 import { useContext } from "react";
 import AuthContext from "../../../context/AuthenticationContext";
 import { useNavigate } from "react-router-dom";
+import fetchAPI from "../../fetchAPI";
 import Button from "../../components/button";
 import hidden from "../../images/hidden.png";
 import shown from "../../images/shown.png";
 import "./index.css";
+import Spiner from "../../components/loadingIcon";
 
 function Login() {
   const passwordInput = useRef(null);
-  const { token, setToken, loading, setLoading, error, setError } =
+  const { token, setToken, loading, setLoading, tokenError, setTokenError } =
     useContext(AuthContext);
   const navigate = useNavigate();
   const [name, setName] = useState("");
@@ -18,23 +20,23 @@ function Login() {
   const LogIn = async () => {
     try {
       setLoading(true);
-      console.log({ name, password });
-      const response = await fetch(
+      const response = await fetchAPI.postData(
         "https://academy-video-api.herokuapp.com/auth/login",
         {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-          },
-
-          body: JSON.stringify({ username: name, password: password }),
+          username: name,
+          password: password,
         }
       );
-      const payload = await response.json();
-      console.log(payload);
-      setToken(payload.token);
+      const data = await response;
+      console.log(data);
+      if (data.token) {
+        setToken(data.token);
+      }
+      if (data.status === 400) {
+        setTokenError(data.data.error.message);
+      }
     } catch (e) {
-      setError(e);
+      setTokenError(e);
     }
     setLoading(false);
   };
@@ -68,6 +70,7 @@ function Login() {
               required
             />
           </div>
+
           <div className="inputWrapper">
             <label htmlFor="password">Password</label> <br />
             <input
@@ -86,10 +89,11 @@ function Login() {
               src={on ? hidden : shown}
             ></img>
           </div>
-          {error && <p className="error">{error}</p>}
+          {tokenError && <p className="error">{tokenError}</p>}
           <Button onClick={LogIn} className={"center signInBtn"}>
             Sign In
           </Button>
+          {loading && <Spiner />}
         </div>
       </form>
     </div>

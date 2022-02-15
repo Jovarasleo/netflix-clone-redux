@@ -1,8 +1,8 @@
 button,
 a {
   border: none;
-  background-color: #e50914;
-  border: 1px solid #e50914;
+  background-color: var(--bright-red);
+  border: 1px solid var(--bright-red);
   color: white;
   border-radius: 4px;
   font-size: 16px;

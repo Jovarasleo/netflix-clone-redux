@@ -1,19 +1,23 @@
 .formWrapper {
-  background-color: rgb(37, 37, 37);
-  height: calc(100vh - (130px));
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  background-color: var(--dark-gray);
+  flex: 1;
   display: flex;
-  align-items: center;
   justify-content: center;
-  padding-bottom: 50px;
+  align-items: center;
+}
+.login {
+  position: relative;
 }
 .login-form {
-  margin: 0 auto;
+  margin: 10px;
+  background-color: var(--light-gray);
   width: 500px;
   padding: 50px;
   display: flex;
   flex-direction: column;
-  background-color: rgb(199, 199, 199);
-  position: relative;
   border-radius: 10px;
 }
 .login-form label {
@@ -38,10 +42,8 @@
   margin-bottom: 20px;
 }
 .error {
-  color: red;
+  color: var(--bright-red);
   position: absolute;
-  width: 500px;
-  top: 70%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
@@ -52,7 +54,13 @@
   width: 35px;
   height: 35px;
   position: absolute;
+  cursor: pointer;
 }
 .signInBtn {
   margin-top: 20px;
+}
+@media only screen and (max-width: 540px) {
+  .login-form {
+    padding: 5px;
+  }
 }

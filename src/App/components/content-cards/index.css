@@ -4,22 +4,25 @@
   width: 100%;
 }
 h4 {
-  font-size: 1.5rem;
+  font-size: 24px;
   margin: 0;
+  font-weight: 700;
   box-sizing: border-box;
+  cursor: pointer;
 }
 button {
   margin: 20px 0px;
 }
 .card--image {
   width: 100%;
+  cursor: pointer;
 }
 .card--wrapper {
   padding: 0 10px;
   box-sizing: border-box;
   width: 100%;
   position: absolute;
-  background-color: rgb(56, 56, 56);
+  background-color: var(--dark-gray);
   color: white;
   bottom: 0;
   display: flex;
@@ -36,4 +39,5 @@ button {
   text-align: left;
   font-size: 14px;
   width: 250px;
+  cursor: pointer;
 }

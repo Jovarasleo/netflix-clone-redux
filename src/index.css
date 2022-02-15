@@ -1,20 +1,18 @@
+:root {
+  --ligter-gray-font: #e5e5e5;
+  --light-gray: #c4c4c4;
+  --dark-gray: #222222;
+  --bright-red: #e50914;
+}
 * {
   margin: 0px;
   padding: 0px;
   font-family: "Roboto", sans-serif;
-  color: white;
+  color: var(--ligter-gray-font);
 }
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: black;
-  min-height: 100vh;
   position: relative;
-}
-.loading,
-.error {
-  display: inline-block;
-  width: 100vw;
-  color: white;
-  text-align: center;
 }

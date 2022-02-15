@@ -4,7 +4,7 @@ import "./index.css";
 function MainBanner() {
   return (
     <div className="header__banner">
-      <img src={banner} alt="" />
+      {/* <img src={banner} alt="" className="banner-img" /> */}
       <div className="wrapper">
         <h2>Wanna more Content?</h2>
         <Button className={"center"} to={"/login"}>

@@ -1,17 +1,18 @@
 import { createContext, useState } from "react";
 const DEFAULT_MOVIES = {
-  listLoading: false,
-  listError: null,
+  load: true,
+  error: null,
   list: [],
 };
+console.log(DEFAULT_MOVIES.listLoading);
 const GetMoviesContext = createContext(DEFAULT_MOVIES);
 const GetMoviesProvider = ({ children }) => {
+  const [load, setLoad] = useState(DEFAULT_MOVIES.load);
   const [list, setList] = useState(DEFAULT_MOVIES.list);
-  const [listLoading, setLoading] = useState(DEFAULT_MOVIES.loading);
-  const [listError, setError] = useState(DEFAULT_MOVIES.error);
+  const [error, setError] = useState(DEFAULT_MOVIES.error);
   return (
     <GetMoviesContext.Provider
-      value={{ list, setList, listLoading, setLoading, listError, setError }}
+      value={{ list, setList, load, setLoad, error, setError }}
     >
       {children}
     </GetMoviesContext.Provider>

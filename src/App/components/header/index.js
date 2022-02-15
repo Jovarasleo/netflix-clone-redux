@@ -1,9 +1,11 @@
 import "./index.css";
+import loadable from "@loadable/component";
 import Button from "../button";
 import { useNavigate } from "react-router-dom";
 import logo from "../../images/logo.svg";
 import { useContext } from "react";
 import AuthContext from "../../../context/AuthenticationContext";
+const Login = loadable(() => import("../../pages/Login/Login"));
 function Header() {
   const navigate = useNavigate();
   const { token, setToken } = useContext(AuthContext);
@@ -21,7 +23,9 @@ function Header() {
               Log Out
             </Button>
           ) : (
-            <Button to="/login">Sign In</Button>
+            <Button onMouseOver={() => Login.preload()} to="/login">
+              Sign In
+            </Button>
           )}
         </div>
       </div>

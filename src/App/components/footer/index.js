@@ -1,10 +1,15 @@
+import creditCards from "../../images/credit-cards.png";
 import "./index.css";
 function Footer() {
   return (
     <footer>
-      <p>
-        We care about entertainment. Copyright @ 2020-2022 chineseNetflix.com
-      </p>
+      <div className="footerWrapper">
+        <p>
+          We care about your entertainment. Copyright © 2019–2022
+          chineseNetflix.com
+        </p>
+        <img src={creditCards} alt=""></img>
+      </div>
     </footer>
   );
 }

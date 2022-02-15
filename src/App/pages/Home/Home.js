@@ -1,69 +1,60 @@
 import React, { useEffect } from "react";
 import Banner from "../../components/banner";
 import MovieCard from "../../components/content-cards";
+import Spiner from "../../components/loadingIcon";
 import Button from "../../components/button";
 import { useCallback } from "react";
 import AuthContext from "../../../context/AuthenticationContext";
 import GetMoviesContext from "../../../context/GetMoviesContext";
 import { useContext } from "react";
+import fetchAPI from "../../fetchAPI";
+
 import "./index.css";
 
 function Home() {
-  const { list, setList, listLoading, listError, setError } =
+  const { list, setList, load, setLoad, error, setError } =
     useContext(GetMoviesContext);
-  const { token } = useContext(AuthContext);
-  // const tokenError = useSelector((state) =>
-  //   auth.selectors.getTokenError(state)
-  // );
+  const { token, setToken } = useContext(AuthContext);
   const getMovies = useCallback(async () => {
-    // setLoading(true);
-    let payload;
     try {
-      if (token) {
-        let response = await fetch(
-          "https://academy-video-api.herokuapp.com/content/items",
-          {
-            method: "GET",
-            headers: {
-              "content-type": "application/json",
-              authorization: token,
-            },
-          }
-        );
-        payload = await response.json();
-        console.log("getMovies TOKEN:", payload);
+      const getContent = await fetchAPI.getData(
+        token
+          ? `https://academy-video-api.herokuapp.com/content/items`
+          : `https://academy-video-api.herokuapp.com/content/free-items`,
+        token
+      );
+      console.log(getContent);
+      if (getContent.success) {
+        setList(getContent.data);
+        setLoad(false);
       }
-      if (!token) {
-        let response = await fetch(
-          "https://academy-video-api.herokuapp.com/content/free-items"
-        );
-        payload = await response.json();
-        console.log("getMovies !TOKEN:", payload);
+      if (!getContent.success) {
+        setError(getContent.data.error);
       }
-      setList(payload);
+      if (getContent.status === 401) {
+        setError("Session Expired");
+        setTimeout(function () {
+          localStorage.removeItem("token");
+          setToken("");
+          setError(null);
+        }, 5000);
+      }
     } catch (e) {
       setError(e);
     }
-    // setLoading(listLoading);
-  }, [setError, setList, token]);
+  }, [token, setToken, setList, setError, setLoad]);
 
   useEffect(() => {
-    getMovies();
-    // if (tokenError?.length) {
-    //   console.log("token err:", tokenError);
-    //   dispatch(auth.actions.deleteToken());
-    // }
-  }, [getMovies]);
+    if (load) {
+      getMovies();
+    }
+  }, [getMovies, token, load]);
   console.log(" HOME CALLED:", list);
   return (
     <>
       {!token ? <Banner /> : null}
       <div className="contentWrapper">
         <div className="Cards">
-          {listError?.length && (
-            <p className="error">{JSON.stringify(listError)}</p>
-          )}
-          {listLoading && <p className="loading">Loading</p>}
           {list?.map(({ image, title, description, id }) => (
             <MovieCard
               key={id}
@@ -74,6 +65,8 @@ function Home() {
             />
           ))}
         </div>
+        {error && <p className="error-msg">{JSON.stringify(error)}</p>}
+        {load && <Spiner />}
         {!token ? (
           <Button to={"/login"} className={"center margin-top"}>
             Get More Content
