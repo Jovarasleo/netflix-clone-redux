@@ -8,39 +8,46 @@ import hidden from "../../images/hidden.png";
 import shown from "../../images/shown.png";
 import "./index.css";
 import Spiner from "../../components/loadingIcon";
+import GetMoviesContext from "../../../context/GetMoviesContext";
 
 function Login() {
   const passwordInput = useRef(null);
   const { token, setToken, loading, setLoading, tokenError, setTokenError } =
     useContext(AuthContext);
+  const { setLoad } = useContext(GetMoviesContext);
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [on, setOn] = useState(true);
   const LogIn = async () => {
-    try {
-      setLoading(true);
-      const response = await fetchAPI.postData(
-        "https://academy-video-api.herokuapp.com/auth/login",
-        {
-          username: name,
-          password: password,
+    if (name && password) {
+      try {
+        setLoading(true);
+        const response = await fetchAPI.postData(
+          "https://academy-video-api.herokuapp.com/auth/login",
+          {
+            username: name,
+            password: password,
+          }
+        );
+        const data = await response;
+        console.log(data);
+        if (data.token) {
+          setToken(data.token);
+          setLoad(true);
+          setTokenError(null);
         }
-      );
-      const data = await response;
-      console.log(data);
-      if (data.token) {
-        setToken(data.token);
+        if (data.status === 400) {
+          setTokenError(data.data.error.message);
+        }
+      } catch (e) {
+        setTokenError(e);
       }
-      if (data.status === 400) {
-        setTokenError(data.data.error.message);
-      }
-    } catch (e) {
-      setTokenError(e);
+    } else {
+      setTokenError("Missing login information");
     }
     setLoading(false);
   };
-
   const pswType = () => {
     setOn(!on);
     let type = passwordInput.current.type;

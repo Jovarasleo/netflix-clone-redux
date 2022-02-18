@@ -36,6 +36,7 @@ function Home() {
         setTimeout(function () {
           localStorage.removeItem("token");
           setToken("");
+          setLoad(true);
           setError(null);
         }, 5000);
       }
@@ -45,6 +46,7 @@ function Home() {
   }, [token, setToken, setList, setError, setLoad]);
 
   useEffect(() => {
+    console.log(load);
     if (load) {
       getMovies();
     }
@@ -68,7 +70,7 @@ function Home() {
         {error && <p className="error-msg">{JSON.stringify(error)}</p>}
         {load && <Spiner />}
         {!token ? (
-          <Button to={"/login"} className={"center margin-top"}>
+          <Button to={"/registration"} className={"center margin-top"}>
             Get More Content
           </Button>
         ) : (

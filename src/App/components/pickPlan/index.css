@@ -1,0 +1,17 @@
+.plans {
+  display: flex;
+  justify-content: space-between;
+  flex: 1;
+}
+.singlePlan * {
+  color: black;
+}
+.singlePlan {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  min-height: 240px;
+  border-radius: 5px;
+}

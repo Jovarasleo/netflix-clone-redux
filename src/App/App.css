@@ -4,6 +4,9 @@
   font-size: 24px;
   color: var(--ligter-gray-font);
 }
+.selected {
+  background-color: var(--bright-red);
+}
 .App {
   min-height: 100vh;
   display: flex;

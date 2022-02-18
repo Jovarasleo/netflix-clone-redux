@@ -5,12 +5,15 @@ import { useNavigate } from "react-router-dom";
 import logo from "../../images/logo.svg";
 import { useContext } from "react";
 import AuthContext from "../../../context/AuthenticationContext";
+import GetMoviesContext from "../../../context/GetMoviesContext";
 const Login = loadable(() => import("../../pages/Login/Login"));
 function Header() {
   const navigate = useNavigate();
   const { token, setToken } = useContext(AuthContext);
+  const { setLoad } = useContext(GetMoviesContext);
   const logout = () => {
     localStorage.removeItem("token");
+    setLoad(true);
     setToken("");
   };
   return (
