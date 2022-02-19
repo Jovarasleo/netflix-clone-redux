@@ -3,7 +3,7 @@
   max-width: 270px;
   width: 100%;
 }
-h4 {
+.card--title {
   font-size: 24px;
   margin: 0;
   font-weight: 700;
@@ -30,7 +30,7 @@ button {
   align-items: flex-start;
   justify-content: space-between;
 }
-.card--wrapper p {
+.card--description {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;

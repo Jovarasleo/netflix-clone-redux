@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
 import { useContext } from "react";
 import RegistrationContext from "../../../context/RegistrationContext";
-import Button from "../button";
 function RegForm() {
-  const { email, setEmail, password, setPassword, plan, setPlan } =
+  const { email, setEmail, password, setPassword, password2, setPassword2 } =
     useContext(RegistrationContext);
+
   return (
     <>
       <div className="inputWrapper">
@@ -28,7 +27,7 @@ function RegForm() {
           onChange={(e) => setPassword(e.target.value)}
           value={password}
           type="password"
-          name="password"
+          name="password1"
           id="password1"
           required
         />
@@ -38,10 +37,10 @@ function RegForm() {
         <br />
         <input
           className="login_form__input"
-          onChange={(e) => setPassword(e.target.value)}
-          value={""}
+          onChange={(e) => setPassword2(e.target.value)}
+          value={password2}
           type="text"
-          name="password"
+          name="password2"
           id="password2"
           required
         />

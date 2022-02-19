@@ -1,4 +1,3 @@
-import banner from "../../images/banner.jpg";
 import Button from "../button";
 import "./index.css";
 function MainBanner() {

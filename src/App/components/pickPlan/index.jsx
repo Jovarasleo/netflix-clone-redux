@@ -1,8 +1,7 @@
-import React, { useCallback, useState, useEffect, useRef } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useContext } from "react";
 import RegistrationContext from "../../../context/RegistrationContext";
 import fetchAPI from "../../fetchAPI";
-import Button from "../button";
 import "./index.css";
 function PickPlan() {
   const { plan, setPlan, getPlans, setGetPlans } =
@@ -11,9 +10,7 @@ function PickPlan() {
     const response = await fetchAPI.getData(
       "https://academy-video-api.herokuapp.com/sales/plans"
     );
-    console.log(response);
     if (response.status === 200) {
-      console.log(response.data);
       setGetPlans(response.data);
     }
   }, [setGetPlans]);
@@ -23,8 +20,6 @@ function PickPlan() {
   return (
     <>
       <div className="plans">
-        {console.log("plans:", getPlans)}
-
         {getPlans?.map(({ id, title, monthlyCost, totalCost }) => {
           return (
             <div key={id} className="singlePlan">

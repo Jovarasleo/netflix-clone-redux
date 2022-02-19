@@ -19,8 +19,18 @@ function MovieCard({ id, img, title, about }) {
       ></img>
       <div className="card--wrapper">
         <div>
-          <h4 onClick={() => navigate(`/content/${id}`)}>{title}</h4>
-          <p onClick={() => navigate(`/content/${id}`)}>{about}</p>
+          <h4
+            onClick={() => navigate(`/content/${id}`)}
+            className="card--title"
+          >
+            {title}
+          </h4>
+          <p
+            onClick={() => navigate(`/content/${id}`)}
+            className="card--description"
+          >
+            {about}
+          </p>
         </div>
         <div>
           <Button
