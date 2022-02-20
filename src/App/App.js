@@ -18,22 +18,19 @@ function App() {
     <AuthProvider>
       <FavouritesProvider>
         <GetMoviesProvider>
-          <BrowserRouter>
-            <RegistrationProvider>
+          <RegistrationProvider>
+            <BrowserRouter>
               <Layout>
                 <Routes>
                   <Route path="*" element={<NotFound />} />
                   <Route exact path="/" element={<Home />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/content/:movieId" element={<SingleMovie />} />
-                  <Route
-                    path="/registration"
-                    element={<Registration />}
-                  ></Route>
+                  <Route path="/registration" element={<Registration />} />
                 </Routes>
               </Layout>
-            </RegistrationProvider>
-          </BrowserRouter>
+            </BrowserRouter>
+          </RegistrationProvider>
         </GetMoviesProvider>
       </FavouritesProvider>
     </AuthProvider>

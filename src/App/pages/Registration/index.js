@@ -9,7 +9,7 @@ import PickPlan from "../../components/pickPlan";
 import GetMoviesContext from "../../../context/GetMoviesContext";
 import "./index.css";
 import RegistrationContext from "../../../context/RegistrationContext";
-
+import Form from "../../components/form";
 function Regitration() {
   const navigate = useNavigate();
   const { setLoad } = useContext(GetMoviesContext);
@@ -26,11 +26,16 @@ function Regitration() {
     password2,
     setPassword2,
   } = useContext(RegistrationContext);
+
   const [selection, setSelection] = useState("create");
   const toPlans = (next) => {
     if (email.length && password.length && password2 === password) {
       setSelection(next);
       setError(null);
+    }
+    if (!email || !password) {
+      console.log("works");
+      setError("Enter Email and Password");
     }
     if (password2 !== password) {
       setError("Password Mismatch");
@@ -38,14 +43,16 @@ function Regitration() {
   };
   const toPayment = (next) => {
     if (!plan) {
-      setError("Please select plan");
+      setError("Please Select a Subscription Plan");
     } else {
       setSelection(next);
       setError(null);
     }
   };
+  const isSelected = (selected) => {
+    return selection === selected ? "selected" : "";
+  };
   const postReg = async () => {
-    console.log("worked");
     try {
       const response = await fetchAPI.postData(
         "https://academy-video-api.herokuapp.com/auth/signup",
@@ -56,6 +63,7 @@ function Regitration() {
         }
       );
       const data = await response;
+      console.log(data);
       if (data.token) {
         setToken(data.token);
         setEmail("");
@@ -63,8 +71,12 @@ function Regitration() {
         setPassword2("");
         setPlan("");
         setLoad(true);
+      } else {
+        setError(...data.data.error.errors);
       }
-    } catch (e) {}
+    } catch (e) {
+      setError(e);
+    }
   };
   useEffect(() => {
     if (token) {
@@ -73,46 +85,48 @@ function Regitration() {
   });
   return (
     <>
+      <hr className="breakLine" />
       {!token && (
-        <div className="formWrapper">
-          <section className="regSections">
-            <div
-              onClick={() => setSelection("create")}
-              className={selection === "create" ? "selected" : ""}
-            >
-              Create User
+        <div className="formWrapper bg-black">
+          <div className="innerWrapper">
+            <div className="regSections">
+              <div
+                onClick={() => setSelection("create")}
+                className={isSelected("create")}
+              >
+                Create User
+              </div>
+              <div
+                onClick={() => toPlans("plan")}
+                className={isSelected("plan")}
+              >
+                Pick a Plan
+              </div>
+              <div
+                onClick={() => toPayment("payment")}
+                className={isSelected("payment")}
+              >
+                Payment
+              </div>
             </div>
-            <div
-              onClick={() => setSelection("plan")}
-              className={selection === "plan" ? "selected" : ""}
-            >
-              Pick a Plan
-            </div>
-            <div
-              onClick={() => setSelection("payment")}
-              className={selection === "payment" ? "selected" : ""}
-            >
-              Payment
-            </div>
-          </section>
 
-          <form
-            className="registration-form"
-            onSubmit={(e) => e.preventDefault()}
-          >
-            <div className="regWrapper">
-              {selection === "create" && <RegForm />}
-              {selection === "plan" && <PickPlan />}
-            </div>
-            {error && <p className="error">{error}</p>}
-            {selection === "create" && (
-              <Button onClick={() => toPlans("plan")}>Continue</Button>
-            )}
-            {selection === "plan" && (
-              <Button onClick={() => toPayment("payment")}>Continue</Button>
-            )}
-            {selection === "payment" && <Button onClick={postReg}>Next</Button>}
-          </form>
+            <Form className={"borderRadiusBtm-10"} background={"bg-black"}>
+              <div className="regWrapper">
+                {selection === "create" && <RegForm />}
+                {selection === "plan" && <PickPlan />}
+              </div>
+              {error && <p className="error">{error}</p>}
+              {selection === "create" && (
+                <Button onClick={() => toPlans("plan")}>Continue</Button>
+              )}
+              {selection === "plan" && (
+                <Button onClick={() => toPayment("payment")}>Continue</Button>
+              )}
+              {selection === "payment" && (
+                <Button onClick={postReg}>Submit</Button>
+              )}
+            </Form>
+          </div>
         </div>
       )}
     </>

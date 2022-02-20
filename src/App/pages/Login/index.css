@@ -1,67 +1,9 @@
-.formWrapper {
-  width: 100%;
-  height: 100%;
-  margin: auto;
-  background-color: var(--dark-gray);
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.login {
-  position: relative;
-}
-.login-form {
-  box-sizing: border-box;
-  padding: 50px;
-  max-width: 600px;
-  width: 100%;
-  background-color: var(--light-gray);
-  display: flex;
-  flex-direction: column;
+.borderRadius-10 {
   border-radius: 10px;
 }
-.login-form label {
-  color: black;
-  font-weight: 600;
+.bg-darkGray {
+  background-color: var(--dark-gray);
 }
-.login-form input {
-  margin-top: 10px;
-  width: 100%;
-  height: 35px;
-  color: black;
-  margin-bottom: 10px;
-  border: none;
-  border-radius: 5px;
-  padding-left: 10px;
-  font-size: 16px;
-  background-color: white;
-  box-sizing: border-box;
-}
-.inputWrapper {
-  position: relative;
-  margin-bottom: 20px;
-}
-.error {
-  color: var(--bright-red);
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.inputIcon {
-  top: 28px;
-  right: 0px;
-  padding-right: 10px;
-  width: 35px;
-  height: 35px;
-  position: absolute;
-  cursor: pointer;
-}
-.signInBtn {
-  margin-top: 20px;
-}
-@media only screen and (max-width: 540px) {
-  .login-form {
-    padding: 5px;
-  }
+.margin-20 {
+  margin: 20px;
 }

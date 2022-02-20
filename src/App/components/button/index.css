@@ -1,5 +1,4 @@
-button,
-a {
+.buttonComponent {
   border: none;
   background-color: var(--bright-red);
   border: 1px solid var(--bright-red);

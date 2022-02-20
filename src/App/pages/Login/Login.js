@@ -9,7 +9,7 @@ import shown from "../../images/shown.png";
 import "./index.css";
 import Spiner from "../../components/loadingIcon";
 import GetMoviesContext from "../../../context/GetMoviesContext";
-
+import Form from "../../components/form";
 function Login() {
   const passwordInput = useRef(null);
   const { token, setToken, loading, setLoading, tokenError, setTokenError } =
@@ -62,48 +62,41 @@ function Login() {
   }, [token, navigate]);
 
   return (
-    <div className="formWrapper">
-      <form className="login-form" onSubmit={(e) => e.preventDefault()}>
-        <div className="login">
-          <div className="inputWrapper">
-            <label htmlFor="username">Username </label>
-            <br />
-            <input
-              className="login_form__input"
-              onChange={(e) => setName(e.target.value)}
-              type="text"
-              name="username"
-              id="username"
-              required
-            />
-          </div>
-
-          <div className="inputWrapper">
-            <label htmlFor="password">Password</label> <br />
-            <input
-              ref={passwordInput}
-              className="login_form__input password"
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              name="password"
-              id="password"
-              required
-            />
-            <img
-              className="inputIcon"
-              onClick={() => pswType()}
-              alt="Visibility Icon"
-              src={on ? hidden : shown}
-            ></img>
-          </div>
-          {tokenError && <p className="error">{tokenError}</p>}
-          <Button onClick={LogIn} className={"center signInBtn"}>
-            Sign In
-          </Button>
-          {loading && <Spiner />}
-        </div>
-      </form>
-    </div>
+    <Form className="borderRadius-10 margin-20" background={"bg-darkGray"}>
+      <div className="inputWrapper">
+        <label htmlFor="username">Username </label>
+        <br />
+        <input
+          onChange={(e) => setName(e.target.value)}
+          type="text"
+          name="username"
+          id="username"
+          required
+        />
+      </div>
+      <div className="inputWrapper">
+        <label htmlFor="password">Password</label> <br />
+        <input
+          ref={passwordInput}
+          onChange={(e) => setPassword(e.target.value)}
+          type="password"
+          name="password"
+          id="password"
+          required
+        />
+        <img
+          className="inputIcon"
+          onClick={() => pswType()}
+          alt="Visibility Icon"
+          src={on ? hidden : shown}
+        ></img>
+      </div>
+      {!loading && tokenError && <p className="error">{tokenError}</p>}
+      <Button onClick={LogIn} className={"center marginTop"}>
+        Sign In
+      </Button>
+      {loading && <Spiner className={"error marginTop"} />}
+    </Form>
   );
 }
 export default Login;
