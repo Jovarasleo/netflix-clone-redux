@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import loadable from "@loadable/component";
 import Banner from "../../components/banner";
 import MovieCard from "../../components/content-cards";
 import Spiner from "../../components/loadingIcon";
@@ -8,8 +9,9 @@ import AuthContext from "../../../context/AuthenticationContext";
 import GetMoviesContext from "../../../context/GetMoviesContext";
 import { useContext } from "react";
 import fetchAPI from "../../fetchAPI";
-
 import "./index.css";
+
+const Registration = loadable(() => import("../../pages/Registration"));
 
 function Home() {
   const { list, setList, load, setLoad, error, setError } =
@@ -70,7 +72,11 @@ function Home() {
         {error && <p className="error-msg">{JSON.stringify(error)}</p>}
         {load && <Spiner />}
         {!token ? (
-          <Button to={"/registration"} className={"center margin-top"}>
+          <Button
+            to={"/registration"}
+            onMouseOver={() => Registration.preload()}
+            className={"center margin-top"}
+          >
             Get More Content
           </Button>
         ) : (
