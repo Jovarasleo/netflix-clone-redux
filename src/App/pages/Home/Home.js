@@ -27,7 +27,7 @@ function Home() {
       console.log("token err:", tokenError);
       dispatch(auth.actions.deleteToken());
     }
-  }, [dispatch, token]);
+  }, [dispatch, token, tokenError]);
 
   console.log(movies);
   return (
